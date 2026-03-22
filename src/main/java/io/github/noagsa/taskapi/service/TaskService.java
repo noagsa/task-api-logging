@@ -5,6 +5,8 @@ import io.github.noagsa.taskapi.dto.TaskResponseDTO;
 import io.github.noagsa.taskapi.exception.TaskNotFoundException;
 import io.github.noagsa.taskapi.mapper.TaskMapper;
 import io.github.noagsa.taskapi.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class TaskService {
     private Map<Long, Task> tasks;
     private long nextId;
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     public TaskService() {
         this.tasks = new HashMap<>();
@@ -33,14 +36,20 @@ public class TaskService {
         tasks.put(nextId, task);
         nextId++;
 
+        logger.info("Task with id {} created successfully", task.getId());
+
         return TaskMapper.toDTO(task);
     }
 
     public TaskResponseDTO get(long id) {
-        return TaskMapper.toDTO(findTaskOrThrow(id));
+        Task task = findTaskOrThrow(id);
+        logger.info("Task with id {} retrieved successfully", id);
+        return TaskMapper.toDTO(task);
     }
 
     public List<TaskResponseDTO> getAll() {
+        logger.info("All tasks retrieved successfully");
+
         return tasks.values().stream()
                 .map(TaskMapper::toDTO)
                 .toList();
@@ -53,11 +62,16 @@ public class TaskService {
         task.setDone(taskRequestDTO.isDone());
         task.setDueDate(taskRequestDTO.dueDate());
         tasks.put(id, task);
+
+        logger.info("Task with id {} updated successfully", id);
+
         return TaskMapper.toDTO(task);
     }
 
     public void delete(long id) {
         findTaskOrThrow(id);
         tasks.remove(id);
+
+        logger.info("Task with id {} deleted successfully", id);
     }
 }
