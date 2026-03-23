@@ -3,6 +3,7 @@ package io.github.noagsa.taskapi.controller;
 import io.github.noagsa.taskapi.dto.TaskRequestDTO;
 import io.github.noagsa.taskapi.dto.TaskResponseDTO;
 import io.github.noagsa.taskapi.service.TaskService;
+import jakarta.validation.Valid;
 import jdk.dynalink.linker.LinkerServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> addTask(@RequestBody TaskRequestDTO taskRequestDTO) {
+    public ResponseEntity<TaskResponseDTO> addTask(@RequestBody @Valid TaskRequestDTO taskRequestDTO) {
         TaskResponseDTO createdTask = taskService.save(taskRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
@@ -36,7 +37,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable long id, @RequestBody TaskRequestDTO taskRequestDTO) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable long id, @RequestBody @Valid TaskRequestDTO taskRequestDTO) {
         return ResponseEntity.ok().body(taskService.update(id, taskRequestDTO));
     }
 
