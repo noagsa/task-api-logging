@@ -74,4 +74,10 @@ public class TaskService {
 
         logger.info("Task with id {} deleted successfully", id);
     }
+
+    /** For testing purposes only */
+    public void clearTasks() {
+        tasks.clear();
+        nextId = 1;
+    }
 }
